@@ -1,0 +1,108 @@
+---
+title: "blblm vignette"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(blblm)
+library(tidyverse)
+```
+
+## blblm
+
+### blblm(formula, data, m = 10, B = 5000)
+
+This function is the core of the package. It helps you to set up the linear model.
+* `formula`: an object of class "formula", a description of the model to be fitted.
+* `data`: an optional data frame or list of file names, the data you want to use to fit the model.
+* `m`: an integer indicating the number of subsamples you want to use in the Bag of Little Bootstraps.
+* `b`: an integer indicating the number of bootstraps for each subsample.
+
+Base on the original code, I extended this function by adding two features. The first feature is parallelization.
+The current function will let the user to decide whether to use parallelization and how many cores to use. If the
+number of cores that user enters exceeds the available cores of user's machine, the function will stop. 
+
+The second feature is now the function can read files if `data` input is a string vector of filenames. It uses `vroom`
+function to read data, so it supports multiple data format, such as .csv, .tsv, .fwf, etc.
+
+Here is an example of using `blblm()` to read given file names and build the model with parallelization. For the sake of 
+speed, I choose a small B value. In the real process, B should be greater than the value in the example
+```{r}
+file_names <- file.path("flights", list.files("flights"))
+
+fit <- blblm(arr_delay ~ air_time + distance, data = file_names, m = 10, B = 50)
+```
+
+### print(x, ...)
+
+This function simply print the linear model we fitted.
+```{r}
+print(fit)
+```
+
+### sigma(object, confidence = FALSE, level = 0.95, ...)
+
+This function will tell user the standard deviation of the fitted model.
+* `object`: the fitted model that belongs to class `blblm`.
+* `confidence` boolean. If `confidence = TRUE`, the output will include a confidence interval specified by `level`.
+* `level` a numeric value between 0 and 1, indicating level of confidence.
+
+Following is an example of estimated sigma with confidence interval:
+```{r}
+sigma(fit, confidence = TRUE, level = 0.95)
+```
+
+### coef(object, ...)
+
+This function returns the estimated coefficients of model's independent variables and intercept.
+* `object`: the fitted model that belongs to class `blblm`.
+```{r}
+coef(fit)
+```
+
+### confint(object, parm = NULL, level = 0.95, ...)
+
+This function returns the confidence intervals of estimated coefficients, which can be acquired by call `coef()`.
+* `object`: the fitted model that belongs to class `blblm`.
+* `parm`: a string or a string vector that specifies the specific variables that those we want confidence interval from.
+* `level` a numeric value between 0 and 1, indicating level of confidence.
+
+```{r}
+confint(fit, parm = "air_time", level = 0.95)
+```
+
+### predict(object, new_data, confidence = FALSE, level = 0.95, ...)
+
+This function returns the predicted outcome when given a set of new data.
+* `object`: the fitted model that belongs to class `blblm`.
+* `new_data`: the input data that we want to predict its result
+* `confidence` a boolean parameter. If `confidence = TRUE`, the output will include a confidence interval specified by `level`.
+* `level` a numeric value between 0 and 1, indicating level of confidence.
+```{r}
+predict(fit, data.frame(air_time = c(220, 100), distance = c(1500, 700)), confidence = TRUE)
+```
+
+
+## blbglm
+
+Beside improving the base code, I also added a new function to fit the date into generalized linear model (glm).
+A lot like the updated `blblm()` function, this function also support read file names and parallelization. Also, I kept
+the class of this function's output as "blblm" so it will share all blblm's methods.
+
+### blbglm(formula, data, family = "gaussian", m = 10, B = 5000)
+
+A new parameter `family` is added to this function. This function is used to indicate the kernel we use for our generalized
+linear model. For example, if input data is continuous, we could use `family = gaussian()`; if data is discrete, we 
+could use `family = poisson()`; if we want binary outcome, we could use `family = binomial()`. To use this function, you can refer
+back to the instructions in __blblm__ section. 

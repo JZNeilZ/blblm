@@ -6,6 +6,15 @@
 \usage{
 lm_each_subsample(formula, data, n, B)
 }
+\arguments{
+\item{formula}{linear regression model}
+
+\item{data}{input data}
+
+\item{n}{size of each blb dataset}
+
+\item{B}{number of bootstraps}
+}
 \description{
-compute the estimates
+Use bootstrap on each subsample to compute its coefficients
 }

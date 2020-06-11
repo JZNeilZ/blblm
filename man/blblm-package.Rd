@@ -2,12 +2,12 @@
 % Please edit documentation in R/blblm.R
 \docType{package}
 \name{blblm-package}
-\alias{blblm}
-\alias{blblm-package}
-\title{blblm: What the Package Does (Title Case)}
+\title{blblm: Build Linear Model Using Bag of Little Bootstraps}
 \description{
-More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+This package is used to build linear regression/ generalized linear regression models by using 
+    the Bag of Little Bootstrap (blb) method to increase the accuracy of estimated parameters. Besides setting
+    up the model, this package also provides an estimation of confidence interval on estimated parameters, 
+    sigma, and predicted outcome.
 }
 \details{
 Linear Regression with Little Bag of Bootstraps

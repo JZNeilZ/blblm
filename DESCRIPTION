@@ -1,18 +1,29 @@
 Package: blblm
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Build Linear Model Using Bag of Little Bootstraps
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: person(c("Randy, Junzhe"), c("Lai, Zhu"), 
+    email = c("rcslai@ucdavis.edu", "jznzhu@ucdavis.edu"))
+Maintainer: Junzhe Zhu <jznzhu@ucdavis.edu>
+Description: This package is used to build linear regression/ generalized linear regression models by using 
+    the Bag of Little Bootstrap (blb) method to increase the accuracy of estimated parameters. Besides setting
+    up the model, this package also provides an estimation of confidence interval on estimated parameters, 
+    sigma, and predicted outcome.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests: 
-    testthat (>= 2.1.0)
+    testthat (>= 2.1.0),
+    knitr,
+    rmarkdown
 Imports: 
     purrr,
-    magrittr
+    magrittr,
+    future,
+    furrr,
+    utils,
+    vroom,
+    tidyverse
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
+VignetteBuilder: knitr
